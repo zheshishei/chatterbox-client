@@ -5,7 +5,8 @@
     "jquery": "~2.0.3",
     "underscore": "~1.7.0",
     "xss": "~0.1.15",
-    "query-string": "~1.0.0"
+    "query-string": "~1.0.0",
+    "moment": "~2.8.4"
   },
   "ignore": [
     "**/.*",

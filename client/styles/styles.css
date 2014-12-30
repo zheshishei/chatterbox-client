@@ -1,16 +1,29 @@
+/*html, body {
+    position:relative;
+    height:100%;
+    width:100%;
+    box-sizing:border-box;
+    overflow:hidden;
+}*/
+
 body {
     background: #eee;
     text-align: center;
     padding: 0 25px;
+    margin: 0;
     font-family: arial, sans-serif;
+    position:relative;
 }
 
 #main {
-    width: 500px;
+    width: 800px;
+    height:100vh;
+    box-sizing:border-box;
+    position: relative;
     margin: auto;
     text-align: left;
     background: white;
-    padding: 50px 60px;
+    padding: 50px 30px;
     border: solid #ddd;
     border-width: 0 1px 1px 1px;
 }
@@ -61,19 +74,71 @@ form input[type=text] {
 
 div.roomNames {
     width: 300px;
-    height: 300px;
+    height: 45vh;
     position: fixed;
     top: 10px;
-    left: 10px;
+    right: 10px;
     background-color: white;
     padding: 5px;
     border: solid #ddd;
     border-width: 0 1px 1px 1px;
+    line-height: 26px;
+    overflow:hidden;
+}
+
+.roomNames .roomsList {
+    height: 60%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    background-color: #eee;
+    border: 1px solid black ;
+}
+
+.roomNames .roomsList .room {
+    padding: 0px 10px;
+    width: 260px;
+    box-sizing: border-box;
+}
+
+.room:hover {
+    background-color: #ddd;
+}
+
+.roomNames .messageCount {
+    margin : 0 7px;
+    padding: 1px 3px;
+    background-color: rgb(20,20,20);
+    color: white;
+    border-radius: 4px;
+    font-size: 10px;
+    display:inline;
+    vertical-align:top;
+}
+
+div.friends {
+    width: 300px;
+    height: 45vh;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: white;
+    padding: 5px;
+    border: solid #ddd;
+    border-width: 0 1px 1px 1px;
+    line-height: 26px;
+    overflow:hidden;
+}
+
+.messages {
+    background-color: #eee;
+    overflow-y: scroll;
+    height: 80%;
+    padding: 10px 0px;
+    border: 1px solid black ;
 }
 
 .chat {
-    padding: 5px;
-    margin-bottom: 5px;
+    padding: 5px 15px;
     background-color: #eee;
     position:relative;
     overflow-wrap:break-word;
@@ -81,17 +146,30 @@ div.roomNames {
 
 .chat .username {
     font-weight: 800;
-    display:block;
+}
+.chat .username::after {
+    content: ": ";
 }
 
 .chat .time {
     position: absolute;
     top: 5px;
     right: 5px;
+    font-size: .8em;
 }
 
 .chat:hover {
     background-color: #ddd;
+}
+
+.chat .room {
+    font-size: .6em;
+    color: #222;
+}
+
+.chat .room::before {
+    font-size:.6em;
+    content: "  "
 }
 
 .spinner {

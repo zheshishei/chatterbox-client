@@ -10,6 +10,8 @@
     <script src="bower_components/underscore/underscore-min.js"></script>
     <script src="bower_components/xss/dist/xss.js"></script>
     <script src="bower_components/query-string/query-string.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+
     <!-- your scripts -->
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
@@ -34,11 +36,23 @@
       </form>
       <!-- Your HTML goes here! -->
       <div class="messages"></div>
+      <div class="roomNames">
+        Available Chat Rooms:
+        <div class="roomEntry">
+          <form onsubmit="return enterRoom()">
+            <input id="inputRoom" type="text" placeholder="Enter room called..">
+            <input type="submit" value="hop to it!">
+          </form>
+        </div>
+        <div class="roomsList"></div>
+      </div>
+
+      <div class="friends">
+
+      </div>
     </div>
 
 
-    <div class="roomNames">
-      Available Chat Rooms
-    </div>
+
   </body>
 </html>

@@ -46,24 +46,26 @@ var getMessages = function() {
 }();
 
 var createMessage = function(message) {
-  var msgElement = $('<div>').addClass('chat'),
-      usrElement = $('<span>').addClass('username').html(filterXSS(message.username || '')),
-      txtElement = $('<span>').addClass('text').html(filterXSS(message.text || '')),
-      roomElement = $('<span>').addClass('room').append(
-                      $('<a>').attr('href', '#')
-                              .html(filterXSS(message.roomname || ''))
-                    ),
-      timeElement = $('<span>').addClass('time').html(message.createdAt);
+  var msgElement = $('<div>').addClass('chat');
+  var usrElement = $('<span>').addClass('username').html(filterXSS(message.username || '').slice(0,30));
+  var txtElement = $('<span>').addClass('text').html(filterXSS(message.text || ''));
+  var timeElement = $('<span>').addClass('time').html(moment(message.createdAt).format('MMM DD YYYY,h:mm:ss a'));
 
-  roomElement.on('click', function (event) {
-    event.preventDefault();
-    window.options.roomname = event.target.innerText;
-    window.location.search = queryString.stringify(window.options);
-  });
+  if(!window.options.roomname) {
+    var roomElement = $('<span>').addClass('room').append(
+                     $('<a>').attr('href', '#')
+                             .html(filterXSS(message.roomname || '')));
+    roomElement.on('click', function (event) {
+      event.preventDefault();
+      window.options.roomname = event.target.innerText;
+      window.location.search = queryString.stringify(window.options);
+    });
+  }
 
-  updateRooms(message.roomname);
 
-  return msgElement.append(usrElement, txtElement, roomElement, timeElement);
+
+
+  return msgElement.append(usrElement, txtElement, timeElement, (roomElement ? roomElement : ''));
 };
 
 var displayMessages = function(messages) {
@@ -105,12 +107,64 @@ var sendMessage = function() {
 var updateRooms = function () {
 
   var availableRooms = {};
-
   return function (room) {
+    availableRooms[window.options.roomname] = 0;
+
+    $.ajax({
+      // always use this url
+      url: 'https://api.parse.com/1/classes/chatterbox',
+      type: 'GET',
+      contentType: 'application/json',
+      data: {
+        order : '-createdAt',
+        limit : 500,
+        keys : 'roomname'
+      },
+      success: function (data) {
+        var results = data.results;
+        for (var i = 0; i < results.length; i++) {
+          availableRooms[results[i].roomname] = availableRooms[results[i].roomname] + 1 || 1;
+        }
+        displayRooms(availableRooms)
+      },
+      error: function (data) {
+        // see: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+        console.error('chatterbox: Failed to send message');
+      }
+    });
+
     availableRooms[room] = room;
   };
 
+  function displayRooms (availableRooms) {
+    var roomNames = Object.keys(availableRooms);
+    for (var i = 0; i < roomNames.length; i++) {
+      var roomName = roomNames[i];
+      var roomElement = $('<div>').addClass('room')
+                          .append($('<a>')
+                            .attr('data-name', filterXSS(roomName))
+                            .attr('href', '#')
+                            .html(filterXSS(roomName).slice(0,30)))
+                          .append($('<span>').addClass('messageCount')
+                            .html(availableRooms[roomNames[i]])
+                          );
+      roomElement.children('a').on('click', function (event) {
+        event.preventDefault();
+        console.log(event);
+        window.options.roomname = event.target.dataset.name;
+        window.location.search = queryString.stringify(window.options);
+      });
+      $('.roomsList').append(roomElement);
+    }
+  }
+
 }();
+
+var enterRoom = function() {
+  window.options.roomname = $('#inputRoom').val();
+  window.location.search = queryString.stringify(window.options);
+  return false;
+}
 
 $(document).ready(function() {
   'use strict'
@@ -119,6 +173,7 @@ $(document).ready(function() {
   console.log(window.options);
   getMessages();
 
+  updateRooms();
   setInterval(getMessages, 5000);
 });
 
