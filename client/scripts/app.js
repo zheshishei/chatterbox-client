@@ -7,6 +7,18 @@ var getMessages = function() {
 
 
   return function() {
+    var body = {
+      order : '-createdAt',
+      limit : 100,
+      where: {
+        'createdAt' : {'$gt' : latestMessage.createdAt},
+        'text' : {'$gt' : ''},
+      }
+    };
+    if(typeof window.options.roomname !== 'undefined') {
+      body.where.roomname = window.options.roomname;
+    }
+
     if (!locked) {
       $.ajax({
         // always use this url
@@ -22,14 +34,7 @@ var getMessages = function() {
           locked = false;
           // populateRooms(data.results);
         },
-        data: {
-          order : '-createdAt',
-          limit : 100,
-          where: {
-            'createdAt' : {'$gt' : latestMessage.createdAt},
-            'text' : {'$gt' : ''}
-          }
-        },
+        data: body,
         error: function (data) {
           // see: https://developer.mozilla.org/en-US/docs/Web/API/console.error
           console.error('chatterbox: Failed to receive message');
@@ -44,8 +49,19 @@ var createMessage = function(message) {
   var msgElement = $('<div>').addClass('chat'),
       usrElement = $('<span>').addClass('username').html(filterXSS(message.username || '')),
       txtElement = $('<span>').addClass('text').html(filterXSS(message.text || '')),
-      roomElement = $('<span>').addClass('room').html(filterXSS(message.roomname || '')),
+      roomElement = $('<span>').addClass('room').append(
+                      $('<a>').attr('href', '#')
+                              .html(filterXSS(message.roomname || ''))
+                    ),
       timeElement = $('<span>').addClass('time').html(message.createdAt);
+
+  roomElement.on('click', function (event) {
+    event.preventDefault();
+    window.options.roomname = event.target.innerText;
+    window.location.search = queryString.stringify(window.options);
+  });
+
+  updateRooms(message.roomname);
 
   return msgElement.append(usrElement, txtElement, roomElement, timeElement);
 };
@@ -62,7 +78,7 @@ var sendMessage = function() {
   var message = {
     'username': filterXSS(window.options.username),
     'text': filterXSS($('#inputMessage').val()),
-    'roomname': 'the kit-kat-club'
+    'roomname': window.options.roomname
   };
 
   $.ajax({
@@ -85,6 +101,16 @@ var sendMessage = function() {
 
   return false;
 };
+
+var updateRooms = function () {
+
+  var availableRooms = {};
+
+  return function (room) {
+    availableRooms[room] = room;
+  };
+
+}();
 
 $(document).ready(function() {
   'use strict'
