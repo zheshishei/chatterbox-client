@@ -7,6 +7,8 @@
 
     <!-- dependencies -->
     <script src="bower_components/jquery/jquery.min.js"></script>
+    <script src="bower_components/underscore/underscore-min.js"></script>
+    <script src="bower_components/xss/dist/xss.js"></script>
     <!-- your scripts -->
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
@@ -14,7 +16,12 @@
   <body>
     <div id="main">
       <h1>chatterbox</h1>
+      <form onsubmit="return sendMessage()">
+        <input type="text" placeholder="say something">
+        <input type="submit" value="say it!">
+      </form>
       <!-- Your HTML goes here! -->
+      <div class="messages"></div>
     </div>
   </body>
 </html>
