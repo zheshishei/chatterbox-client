@@ -9,15 +9,27 @@
     <script src="bower_components/jquery/jquery.min.js"></script>
     <script src="bower_components/underscore/underscore-min.js"></script>
     <script src="bower_components/xss/dist/xss.js"></script>
+    <script src="bower_components/query-string/query-string.js"></script>
     <!-- your scripts -->
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
   </head>
   <body>
     <div id="main">
-      <h1>chatterbox</h1>
+      <h1 class="title">
+        <span class="char">C</span>
+        <span class="char">H</span>
+        <span class="char">A</span>
+        <span class="char">T</span>
+        <span class="char">T</span>
+        <span class="char">E</span>
+        <span class="char">R</span>
+        <span class="char">B</span>
+        <span class="char">O</span>
+        <span class="char">X</span>
+      </h1>
       <form onsubmit="return sendMessage()">
-        <input type="text" placeholder="say something">
+        <input id="inputMessage" type="text" placeholder="say something" autofocus="true">
         <input type="submit" value="say it!">
       </form>
       <!-- Your HTML goes here! -->
